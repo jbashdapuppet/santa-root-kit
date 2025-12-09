@@ -1,0 +1,53 @@
+#!/usr/bin/env python3
+"""
+sleighctl — The command-and-control tool for the mythical Santa Rootkit.
+This is a harmless simulation for CTF training. It performs no escalation.
+"""
+
+import argparse
+import json
+from pathlib import Path
+
+CONFIG_PATH = Path(__file__).resolve().parent / "etc" / "santa.conf"
+
+def load_config():
+    if CONFIG_PATH.exists():
+        with open(CONFIG_PATH) as f:
+            return json.load(f)
+    return {"magic_token": "NOT_SET", "enabled_hooks": []}
+
+def list_hooks(config):
+    print("[*] Registered Reindeer Hooks:")
+    for hook in config.get("enabled_hooks", []):
+        print(f"  - {hook}")
+    if not config.get("enabled_hooks"):
+        print("  (none)")
+
+def pretend_install():
+    print("[+] Installing Santa Rootkit components…")
+    print("[+] (fake) Writing sleigh-binary… done")
+    print("[+] (fake) Deploying magic dust… done")
+    print("[+] Installation complete! (Nothing actually happened.)")
+
+def pretend_status(config):
+    print("[*] Santa-Root-Kit Status")
+    print(f"  Magic Token: {config.get('magic_token')}")
+    print(f"  Hook Count: {len(config.get('enabled_hooks'))}")
+
+def main():
+    parser = argparse.ArgumentParser(description="Santa Rootkit Controller (fake)")
+    parser.add_argument("action", choices=["install", "status", "hooks"],
+                        help="Action to perform on the mythical rootkit")
+
+    args = parser.parse_args()
+    config = load_config()
+
+    if args.action == "install":
+        pretend_install()
+    elif args.action == "status":
+        pretend_status(config)
+    elif args.action == "hooks":
+        list_hooks(config)
+
+if __name__ == "__main__":
+    main()
